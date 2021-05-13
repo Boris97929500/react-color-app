@@ -1,10 +1,21 @@
 import React, { Component } from "react";
 import ColorBox from './ColorBox';
 import Navbar from './Navbar';
-// import 'rc-slider/assets/index.css';
+import PaletteFooter from "./PaletteFooter";
 import './Palette.css';
-// import Slider from 'rc-slider';
+import { withStyles } from "@material-ui/styles";
 
+const styles = {
+  Palette: {
+    height: '100vh',
+    display: 'flex',
+    flexDirection: 'column',
+    overflow: 'hidden',
+  },
+  colors: {
+    height: "90%"
+  }
+}
 
 class Palette extends Component {
   constructor(props){
@@ -22,23 +33,31 @@ class Palette extends Component {
 
   render() {
     const { level, format } = this.state;
-    const {colors, paletteName} = this.props.palette;
+    const {colors, paletteName, id} = this.props.palette;
+    const { classes } = this.props;
     const colorBoxes = colors[level].map(color=>(
-      <ColorBox background={color[format]} name={color.name} key={color.id} />
+      <ColorBox background={color[format]} 
+      name={color.name} 
+      key={color.id} 
+      moreUrl={`/palette/${id}/${color.id}`}
+      showingFullPalette={true}
+      />
     ))
 
     return (
-      <div className='Palette'>
-        <Navbar level={this.state.level} changeLevel={this.changeLevel} handleChange={this.changeFormat} />
-        <div className='Palette-colors'>
+      <div className={classes.Palette}>
+        <Navbar 
+          level={this.state.level} 
+          changeLevel={this.changeLevel} 
+          handleChange={this.changeFormat}
+          showingAllColors
+        />
+        <div className={classes.colors}>
           {colorBoxes}
         </div>
-        <footer className='Palette-footer'>
-          {paletteName}
-          {/* <span className='emoji' >{emoji}</span> */}
-        </footer>
+          <PaletteFooter paletteName={paletteName} />
       </div>
     );
   }
 }
-export default Palette;
+export default withStyles(styles)(Palette);
